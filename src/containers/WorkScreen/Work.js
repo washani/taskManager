@@ -15,15 +15,15 @@ import {
   responsiveScreenFontSize as RF,
 } from 'react-native-responsive-dimensions';
 import {Colors} from '../../styles';
-import {userPersonalTaskInfo} from '../../api/auth';
+import {userTaskInfo} from '../../api/auth';
 import {useDispatch, useSelector} from 'react-redux';
-import {setPersonalTaskList} from '../../redux/PersonalTask/action';
-import {personalDetailsSelector} from '../../redux/PersonalTask/selectors';
+import {setWorkTaskList} from '../../redux/PersonalTask/action';
+import {workDetailsSelector} from '../../redux/PersonalTask/selectors';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const Work = props => {
   const dispatch = useDispatch();
-  const taskList = useSelector(personalDetailsSelector);
+  const taskList = useSelector(workDetailsSelector);
   const [indicate, setIndicate] = useState(false);
 
   useEffect(() => {
@@ -32,9 +32,9 @@ const Work = props => {
 
   const getUserPersonalData = async () => {
     setIndicate(true);
-    const resultOfPersonalTask = await userPersonalTaskInfo();
-    console.log('resultOfPersonalTask', resultOfPersonalTask);
-    dispatch(setPersonalTaskList(resultOfPersonalTask.Personal));
+    const resultOfPersonalTask = await userTaskInfo('work');
+    // console.log('resultOfPersonalTask', resultOfPersonalTask);
+    dispatch(setWorkTaskList(resultOfPersonalTask.Work));
     setIndicate(false);
   };
 
@@ -53,7 +53,7 @@ const Work = props => {
 
           <View style={{marginRight: wp(5)}}>
             <TouchableOpacity>
-              <Text style={{fontWeight: '700'}}>View</Text>
+              <Text style={{fontWeight: '700'}}>{item.DueDate}</Text>
             </TouchableOpacity>
           </View>
         </View>

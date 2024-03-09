@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {Colors} from '../../styles';
 import {
@@ -14,6 +15,8 @@ import {
   responsiveScreenWidth as wp,
   responsiveScreenFontSize as RF,
 } from 'react-native-responsive-dimensions';
+import {userLogin} from '../../api/auth';
+import {setAuthenticationHeader} from '../../utilities';
 
 const Login = (props: any) => {
   const [userEmail, setUserEmail] = useState('');
@@ -24,6 +27,7 @@ const Login = (props: any) => {
   const emailRef = useRef<TextInput | null>(null);
   const passwordRef = useRef<TextInput | null>(null);
 
+  //======== User Login validation and API call integration ==========
   const submitUserLogins = async () => {
     setIndicate(true);
     try {
@@ -41,11 +45,20 @@ const Login = (props: any) => {
       }
 
       setErrormsg('');
-      const signInInfo = {
-        UserName: userEmail,
-        Password: password,
+      const SignInuserInfo = {
+        username: userEmail,
+        password: password,
       };
-      props.navigation.navigate("BottomTabs");
+      const resultOfSignIn = await userLogin(SignInuserInfo);
+      setIndicate(false);
+
+      //======== Check API status and navigate into BottomTabs ==========
+      if (resultOfSignIn.Status) {
+        await setAuthenticationHeader(resultOfSignIn.Token);
+        props.navigation.navigate('BottomTabs');
+      } else {
+        Alert.alert('Login not success. Please try again');
+      }
     } catch (message: any) {
       console.log('message', message);
       setErrormsg(message);

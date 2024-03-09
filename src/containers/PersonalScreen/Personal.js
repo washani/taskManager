@@ -15,16 +15,21 @@ import {
   responsiveScreenFontSize as RF,
 } from 'react-native-responsive-dimensions';
 import {Colors} from '../../styles';
-import {userPersonalTaskInfo} from '../../api/auth';
+import {userTaskInfo} from '../../api/auth';
 import {useDispatch, useSelector} from 'react-redux';
 import {setPersonalTaskList} from '../../redux/PersonalTask/action';
 import {personalDetailsSelector} from '../../redux/PersonalTask/selectors';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import DisplayBanner from '../../components/DisplayBanner';
 
 const Personal = props => {
   const dispatch = useDispatch();
   const taskList = useSelector(personalDetailsSelector);
   const [indicate, setIndicate] = useState(false);
+  const [bannerVisible, setBannerVisible] = useState(false);
+  const [bannerMessage, setBannerMessage] = useState('');
+  const [bannerTitle, setBannerTitle] = useState('');
+
 
   useEffect(() => {
     getUserPersonalData();
@@ -32,16 +37,29 @@ const Personal = props => {
 
   const getUserPersonalData = async () => {
     setIndicate(true);
-    const resultOfPersonalTask = await userPersonalTaskInfo();
+    const resultOfPersonalTask = await userTaskInfo('personal');
     console.log('resultOfPersonalTask', resultOfPersonalTask);
     dispatch(setPersonalTaskList(resultOfPersonalTask.Personal));
     setIndicate(false);
   };
 
+  const onCancelBanner = () => {
+    //props.navigation.navigate('BottomTabs');
+    setBannerVisible(false);
+  };
+
+  const setAletBanner = async(item) => {
+    await setBannerTitle(item.Title)
+    await setBannerMessage(item.Description)
+    setBannerVisible(true);
+
+  }
+
+
   const renderItem = ({item, index}) => {
-    let paddedNum = String(index + 1).padStart(2, '0');
+  
     return (
-      <View style={styles.dataContainer} key={item.Id}>
+      <TouchableOpacity style={styles.dataContainer} key={item.Id} onPress={() => setAletBanner(item)}>
         <View style={styles.taskView}>
           <View style={styles.taskViewSub}>
             <Image
@@ -52,17 +70,24 @@ const Personal = props => {
           </View>
 
           <View style={{marginRight: wp(5)}}>
-            <TouchableOpacity>
-              <Text style={{fontWeight: '700'}}>View</Text>
-            </TouchableOpacity>
+            <View>
+              <Text style={{fontWeight: '500', color:'red'}}>{item.DueDate}</Text>
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
   return (
     <SafeAreaView style={styles.container}>
+          <DisplayBanner
+            status={bannerVisible}
+            title={bannerTitle}
+            message={bannerMessage}
+            navigation={props.navigation}
+            onCancel={onCancelBanner}
+          />
       <View style={styles.topperSec}>
         <Text style={styles.headingText}>Personal Task List</Text>
         <TouchableOpacity style={{flexDirection:'row', alignItems:'center'}}>

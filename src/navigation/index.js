@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Splash from "../containers/Splash/Splash.tsx";
 import Login from "../containers/Login";
-import Signup from "../containers/Signup";
+import Signup from "../containers/Signup/Signup.tsx";
 import BottomTabs from "../components/BottomTabs";
 
 

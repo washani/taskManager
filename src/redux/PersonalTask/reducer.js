@@ -1,13 +1,21 @@
-import { USER_PERSONAL_TASK} from "./types";
+import { USER_PERSONAL_TASK, USER_WORK_TASK} from "./types";
 
 const initState = {
   personalTaskList: [],
+  workTaskList: [],
 };
 
-const setLeaderbordInfo = (state, data) => {
+const setPersonalTaskInfo = (state, data) => {
   return {
     ...state,
     personalTaskList: data,
+  };
+};
+
+const setWorkTaskInfo = (state, data) => {
+  return {
+    ...state,
+    workTaskList: data,
   };
 };
 
@@ -15,9 +23,11 @@ const setLeaderbordInfo = (state, data) => {
 const personalDetails = (state = initState, { type, playload }) => {
   switch (type) {
     case USER_PERSONAL_TASK: {
-      return setLeaderbordInfo(state, playload);
+      return setPersonalTaskInfo(state, playload);
     }
-
+    case USER_WORK_TASK: {
+      return setWorkTaskInfo(state, playload);
+    }
     default:
       return state;
   }

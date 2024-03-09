@@ -1,4 +1,4 @@
-import { USER_PERSONAL_TASK } from './types';
+import { USER_PERSONAL_TASK, USER_WORK_TASK } from './types';
 
 export const setPersonalTaskList = (playload) => {
     return {
@@ -6,5 +6,13 @@ export const setPersonalTaskList = (playload) => {
         playload,
     };
 }
+
+export const setWorkTaskList = (playload) => {
+    return {
+        type: USER_WORK_TASK,
+        playload,
+    };
+}
+
 
 

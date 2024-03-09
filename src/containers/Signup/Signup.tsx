@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Platform,
   ActivityIndicator,
   TextInput,
+  Alert
 } from 'react-native';
 import {
   responsiveScreenHeight as hp,
@@ -16,6 +17,7 @@ import {
   responsiveScreenFontSize as RF,
 } from 'react-native-responsive-dimensions';
 import {Colors} from '../../styles';
+import {userRegister} from '../../api/auth';
 
 const Signup = (props: any) => {
   const [userEmail, setUserEmail] = useState('');
@@ -30,6 +32,8 @@ const Signup = (props: any) => {
   const passRef = useRef<TextInput | null>(null);
   const passconfirmRef = useRef<TextInput | null>(null);
 
+
+  //======== User Information validation and API call integration ==========
   const submitSignup = async () => {
     setIndicate(true);
     try {
@@ -56,7 +60,22 @@ const Signup = (props: any) => {
         return;
       }
       setErrormsg('');
-      props.navigation.navigate("BottomTabs");
+
+      const signupInfo = {
+        "username": userEmail,
+        "contactNo": mobNumer,
+        "password": confirmPass,
+      }
+      const resultOfSignup = await userRegister(signupInfo);
+      setIndicate(false);
+
+//======== Check API status and navigate into Login ==========
+      if(resultOfSignup.status) {
+        Alert.alert('Signup Success. Please Login')
+        props.navigation.navigate("Login");
+      } else {
+        Alert.alert('Signup not success. Please try again')
+      }
     } catch (message) {
       console.log('error', message);
     }
